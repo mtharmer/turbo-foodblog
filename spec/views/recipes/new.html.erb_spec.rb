@@ -3,12 +3,15 @@
 require 'rails_helper'
 
 RSpec.describe 'recipes/new', type: :view do
+  let(:user) { create(:user) }
+
   before do
     assign(:recipe, build(:recipe))
   end
 
   describe 'renders new recipe form' do
     before do
+      sign_in user
       render
     end
 

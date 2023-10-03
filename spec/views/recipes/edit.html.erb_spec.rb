@@ -4,9 +4,11 @@ require 'rails_helper'
 
 RSpec.describe 'recipes/edit', type: :view do
   let(:recipe) { create(:recipe) }
+  let(:user) { create(:user) }
 
   before do
     assign(:recipe, recipe)
+    sign_in user
   end
 
   describe 'renders the edit recipe form' do

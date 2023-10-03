@@ -43,7 +43,10 @@ RSpec.describe '/recipes', type: :request do
   end
 
   describe 'GET /new' do
+    let(:user) { create(:user) }
+
     it 'renders a successful response' do
+      sign_in user
       get new_recipe_url
       expect(response).to be_successful
     end
