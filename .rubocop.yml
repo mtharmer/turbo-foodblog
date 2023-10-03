@@ -11,6 +11,11 @@ AllCops:
     - spec/spec_helper.rb
     - spec/rails_helper.rb
 
+RSpec/ExampleLength:
+  Enabled: true
+  CountAsOne: ['array', 'hash']
+  Max: 5
+
 RSpec/MultipleExpectations:
   Enabled: false
 
