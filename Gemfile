@@ -51,6 +51,7 @@ group :development, :test do
   gem "rubocop", "~> 1.56", require: false
   gem "rubocop-rails", "~> 2.21", require: false
   gem "rubocop-rspec", "~> 2.24", require: false
+  gem "simplecov", "~> 0.22.0", require: false
 end
 
 group :development do
@@ -63,5 +64,4 @@ group :development do
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   # gem "spring"
 end
-
 
