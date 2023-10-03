@@ -1,0 +1,66 @@
+require:
+  - rubocop-rails
+  - rubocop-rspec
+  - rubocop-factory_bot
+
+AllCops:
+  TargetRubyVersion: 3.0
+  Exclude:
+    - spec/spec_helper.rb
+    - spec/rails_helper.rb
+
+RSpec/MultipleExpectations:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: true
+  Exclude:
+    - Gemfile
+    - Rakefile
+    - config.ru
+    - app/mailers/application_mailer.rb
+    - config/application.rb
+    - config/boot.rb
+    - config/environment.rb
+    - config/environments/test.rb
+    - config/environments/development.rb
+    - config/environments/production.rb
+    - config/initializers/assets.rb
+    - config/puma.rb
+    - config/initializers/**/*
+    - db/migrate/**/*
+
+Style/StringLiterals:
+  Exclude:
+    - Gemfile
+    - Rakefile
+    - config.ru
+    - app/mailers/application_mailer.rb
+    - config/application.rb
+    - config/boot.rb
+    - config/environment.rb
+    - config/environments/test.rb
+    - config/environments/development.rb
+    - config/environments/production.rb
+    - config/initializers/assets.rb
+    - config/puma.rb
+    - config/initializers/**/*
+
+Style/RedundantFetchBlock:
+  Exclude:
+    - config/puma.rb
+
+Style/SymbolArray:
+  Exclude:
+    - config/initializers/**/*
+
+Layout/LineLength:
+  Exclude:
+    - config/initializers/**/*
+
+Metrics/BlockLength:
+  Exclude:
+    - config/environments/development.rb
