@@ -18,17 +18,11 @@ RSpec.describe '/recipes', type: :request do
   # This should return the minimal set of attributes required to create a valid
   # Recipe. As you add validations to Recipe, be sure to
   # adjust the attributes here as well.
-  let(:valid_attributes) do
-    skip('Add a hash of attributes valid for your model')
-  end
-
-  let(:invalid_attributes) do
-    skip('Add a hash of attributes invalid for your model')
-  end
+  let(:valid_user) { create(:user) }
 
   describe 'GET /index' do
     it 'renders a successful response' do
-      Recipe.create! valid_attributes
+      create(:recipe)
       get recipes_url
       expect(response).to be_successful
     end
@@ -36,7 +30,7 @@ RSpec.describe '/recipes', type: :request do
 
   describe 'GET /show' do
     it 'renders a successful response' do
-      recipe = Recipe.create! valid_attributes
+      recipe = create(:recipe)
       get recipe_url(recipe)
       expect(response).to be_successful
     end
@@ -53,8 +47,23 @@ RSpec.describe '/recipes', type: :request do
   end
 
   describe 'GET /edit' do
-    it 'renders a successful response' do
-      recipe = Recipe.create! valid_attributes
+    it 'renders an error if user is not authenticated' do
+      recipe = create(:recipe)
+      get edit_recipe_url(recipe)
+      expect(response).not_to be_successful
+    end
+
+    it 'renders an error if the recipe does not belong the user' do
+      recipe = create(:recipe)
+      sign_in valid_user
+      get edit_recipe_url(recipe)
+      expect(response).not_to be_successful
+      expect(response.status).to eq(302)
+    end
+
+    it 'renders a successful response if logged in' do
+      recipe = create(:recipe, user: valid_user)
+      sign_in valid_user
       get edit_recipe_url(recipe)
       expect(response).to be_successful
     end
@@ -62,27 +71,53 @@ RSpec.describe '/recipes', type: :request do
 
   describe 'POST /create' do
     context 'with valid parameters' do
+      before do
+        sign_in valid_user
+      end
+
       it 'creates a new Recipe' do
+        recipe = build(:recipe, user: valid_user)
         expect do
-          post recipes_url, params: { recipe: valid_attributes }
+          post recipes_url, params: { recipe: recipe.attributes }
         end.to change(Recipe, :count).by(1)
       end
 
       it 'redirects to the created recipe' do
-        post recipes_url, params: { recipe: valid_attributes }
+        recipe = build(:recipe)
+        post recipes_url, params: { recipe: recipe.attributes }
         expect(response).to redirect_to(recipe_url(Recipe.last))
       end
     end
 
+    context 'when unauthenticated' do
+      it 'with good params redirects to sign in page' do
+        recipe = build(:recipe)
+        post recipes_url, params: { recipe: recipe.attributes }
+        expect(response).to redirect_to(new_user_session_url)
+      end
+
+      it 'with bad params redirects to sign in page' do
+        recipe = build(:recipe, title: nil)
+        post recipes_url, params: { recipe: recipe.attributes }
+        expect(response).to redirect_to(new_user_session_url)
+      end
+    end
+
     context 'with invalid parameters' do
+      let(:bad_recipe) { build(:recipe, title: nil) }
+
+      before do
+        sign_in valid_user
+      end
+
       it 'does not create a new Recipe' do
         expect do
-          post recipes_url, params: { recipe: invalid_attributes }
+          post recipes_url, params: { recipe: bad_recipe.attributes }
         end.to change(Recipe, :count).by(0)
       end
 
       it "renders a response with 422 status (i.e. to display the 'new' template)" do
-        post recipes_url, params: { recipe: invalid_attributes }
+        post recipes_url, params: { recipe: bad_recipe.attributes }
         expect(response).to have_http_status(:unprocessable_entity)
       end
     end
@@ -90,46 +125,112 @@ RSpec.describe '/recipes', type: :request do
 
   describe 'PATCH /update' do
     context 'with valid parameters' do
-      let(:new_attributes) do
-        skip('Add a hash of attributes valid for your model')
+      let(:recipe) { create(:recipe, user: valid_user) }
+      let(:new_recipe) { recipe }
+
+      before do
+        sign_in valid_user
       end
 
       it 'updates the requested recipe' do
-        recipe = Recipe.create! valid_attributes
-        patch recipe_url(recipe), params: { recipe: new_attributes }
+        new_recipe.ingredients = 'New Ingredients'
+        patch recipe_url(recipe), params: { recipe: new_recipe.attributes }
         recipe.reload
-        skip('Add assertions for updated state')
+        expect(recipe.ingredients).to eq(new_recipe.ingredients)
       end
 
       it 'redirects to the recipe' do
-        recipe = Recipe.create! valid_attributes
-        patch recipe_url(recipe), params: { recipe: new_attributes }
+        new_recipe.ingredients = 'New Ingredients'
+        patch recipe_url(recipe), params: { recipe: new_recipe.attributes }
         recipe.reload
         expect(response).to redirect_to(recipe_url(recipe))
       end
     end
 
+    context 'when not authenticated' do
+      let(:recipe) { create(:recipe, user: valid_user) }
+      let(:new_recipe) { recipe }
+
+      it 'with good params redirects to sign in page' do
+        new_recipe.ingredients = 'New Ingredients'
+        patch recipe_url(recipe), params: { recipe: new_recipe.attributes }
+        expect(response).to redirect_to(new_user_session_url)
+      end
+
+      it 'with bad params redirects to sign in page' do
+        new_recipe.title = nil
+        patch recipe_url(recipe), params: { recipe: new_recipe.attributes }
+        expect(response).to redirect_to(new_user_session_url)
+      end
+    end
+
     context 'with invalid parameters' do
+      let(:recipe) { create(:recipe, user: valid_user) }
+      let(:new_recipe) { recipe }
+
+      before do
+        sign_in valid_user
+      end
+
       it "renders a response with 422 status (i.e. to display the 'edit' template)" do
-        recipe = Recipe.create! valid_attributes
-        patch recipe_url(recipe), params: { recipe: invalid_attributes }
+        new_recipe.title = nil
+        patch recipe_url(recipe), params: { recipe: new_recipe.attributes }
         expect(response).to have_http_status(:unprocessable_entity)
       end
     end
   end
 
   describe 'DELETE /destroy' do
-    it 'destroys the requested recipe' do
-      recipe = Recipe.create! valid_attributes
-      expect do
+    context 'when authenticated' do
+      before do
+        sign_in valid_user
+      end
+
+      it 'can no longer find the recipe' do
+        recipe = create(:recipe, user: valid_user)
         delete recipe_url(recipe)
-      end.to change(Recipe, :count).by(-1)
+        expect(Recipe.find_by(id: recipe.id)).to be_nil
+      end
+
+      it 'destroys the requested recipe' do
+        recipe = create(:recipe, user: valid_user)
+        expect do
+          delete recipe_url(recipe)
+        end.to change(Recipe, :count).by(-1)
+      end
+
+      it 'redirects to the recipes list' do
+        recipe = create(:recipe, user: valid_user)
+        delete recipe_url(recipe)
+        expect(response).to redirect_to(recipes_url)
+      end
     end
 
-    it 'redirects to the recipes list' do
-      recipe = Recipe.create! valid_attributes
-      delete recipe_url(recipe)
-      expect(response).to redirect_to(recipes_url)
+    context 'when authenticated and deleting another users recipes' do
+      before do
+        sign_in valid_user
+      end
+
+      it 'does not allow deleting' do
+        recipe = create(:recipe)
+        expect do
+          delete recipe_url(recipe)
+        end.to change(Recipe, :count).by(0)
+      end
+
+      it 'redirects the user back to the recipe page' do
+        recipe = create(:recipe)
+        delete recipe_url(recipe)
+        expect(response).to redirect_to(recipe_url(recipe))
+      end
+    end
+
+    context 'when not authenticated' do
+      it 'redirects to the signin page' do
+        recipe = create(:recipe, user: valid_user)
+        delete recipe_url(recipe)
+        expect(response).to redirect_to(new_user_session_url)
+      end
     end
   end
 end

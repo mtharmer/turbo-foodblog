@@ -18,7 +18,14 @@ class RecipesController < ApplicationController
   end
 
   # GET /recipes/1/edit
-  def edit; end
+  def edit
+    return unless @recipe.user_id != current_user.id
+
+    respond_to do |format|
+      format.html { redirect_to recipe_url(@recipe), alert: 'You do not have permissions to modify this recipe.' }
+      format.json { render json: { message: 'unauthorized' }, status: :unauthorized }
+    end
+  end
 
   # POST /recipes or /recipes.json
   def create
@@ -50,11 +57,15 @@ class RecipesController < ApplicationController
 
   # DELETE /recipes/1 or /recipes/1.json
   def destroy
-    @recipe.destroy
-
     respond_to do |format|
-      format.html { redirect_to recipes_url, notice: 'Recipe was successfully destroyed.' }
-      format.json { head :no_content }
+      if @recipe.user_id == current_user.id
+        @recipe.destroy
+        format.html { redirect_to recipes_url, notice: 'Recipe was successfully destroyed.' }
+        format.json { head :no_content }
+      else
+        format.html { redirect_to recipe_url(@recipe), alert: 'You do not have permissions to delete this recipe.' }
+        format.json { render json: { message: 'unauthorized' }, status: :unauthorized }
+      end
     end
   end
 
