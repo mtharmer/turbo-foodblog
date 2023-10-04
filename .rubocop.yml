@@ -73,5 +73,5 @@ Metrics/BlockLength:
   Exclude:
     - config/environments/development.rb
 
-Spec/Rails/InferredSpecType:
+RSpec/Rails/InferredSpecType:
   Enabled: false
