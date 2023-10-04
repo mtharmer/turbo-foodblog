@@ -4,11 +4,11 @@
 #
 # To use the locales, use `I18n.t`:
 #
-#     I18n.t "hello"
+#     I18n.t 'hello'
 #
 # In views, this is aliased to just `t`:
 #
-#     <%= t("hello") %>
+#     <%= t('hello') %>
 #
 # To use a different locale, set it with `I18n.locale`:
 #
@@ -24,10 +24,22 @@
 # Instead, surround them with single quotes.
 #
 # en:
-#   "true": "foo"
+#   'true': 'foo'
 #
 # To learn more, please read the Rails Internationalization guide
 # available at https://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  hello: 'Hello world'
+  recipes:
+    create:
+      notice: 'Recipe was successfully created.'
+    update:
+      notice: 'Recipe was successfully updated.'
+      alert: 'You do not have permissions to modify this recipe.'
+    modified: 'Recipe was successfully updated.'
+    destroy:
+      notice: 'Recipe was successfully deleted.'
+      alert: 'You do not have permissions to modify this recipe.'
+    validate_user:
+      alert: 'You do not have permissins to modify this recipe.'

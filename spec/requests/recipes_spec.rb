@@ -58,7 +58,7 @@ RSpec.describe '/recipes', type: :request do
       sign_in valid_user
       get edit_recipe_url(recipe)
       expect(response).not_to be_successful
-      expect(response.status).to eq(302)
+      expect(response).to have_http_status(:found)
     end
 
     it 'renders a successful response if logged in' do
@@ -113,7 +113,7 @@ RSpec.describe '/recipes', type: :request do
       it 'does not create a new Recipe' do
         expect do
           post recipes_url, params: { recipe: bad_recipe.attributes }
-        end.to change(Recipe, :count).by(0)
+        end.not_to change(Recipe, :count)
       end
 
       it "renders a response with 422 status (i.e. to display the 'new' template)" do
@@ -215,7 +215,7 @@ RSpec.describe '/recipes', type: :request do
         recipe = create(:recipe)
         expect do
           delete recipe_url(recipe)
-        end.to change(Recipe, :count).by(0)
+        end.not_to change(Recipe, :count)
       end
 
       it 'redirects the user back to the recipe page' do

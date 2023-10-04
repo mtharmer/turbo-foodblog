@@ -1,21 +1,21 @@
-<div class="container">
-  <p style="color: green"><%= notice %></p>
+<div class='container'>
+  <p style='color: green'><%= notice %></p>
 
   <h1>Recipes</h1>
 
-  <div id="recipes" class="row row-cols-3">
+  <div id='recipes' class='row row-cols-3'>
     <% @recipes.each do |recipe| %>
-      <div class="col text-center">
-        <div class="card m-2">
+      <div class='col text-center'>
+        <div class='card m-2'>
           <%= render recipe %>
           <p>
-            <%= link_to "Show this recipe", recipe, class: "btn btn-primary" %>
+            <%= link_to 'Show this recipe', recipe, class: 'btn btn-primary' %>
           </p>
         </div>
       </div>
     <% end %>
   </div>
-  <hr />
+  <hr>
 
-  <%= link_to "New recipe", new_recipe_path, class: "btn btn-primary mt-2" %>
+  <%= link_to 'New recipe', new_recipe_path, class: 'btn btn-primary mt-2' %>
 </div>

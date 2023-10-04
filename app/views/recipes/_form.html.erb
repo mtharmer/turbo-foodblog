@@ -1,7 +1,7 @@
 <%= form_with(model: recipe) do |form| %>
   <% if recipe.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(recipe.errors.count, "error") %> prohibited this recipe from being saved:</h2>
+    <div style='color: red'>
+      <h2><%= pluralize(recipe.errors.count, 'error') %> prohibited this recipe from being saved:</h2>
       <ul>
         <% recipe.errors.each do |error| %>
           <li><%= error.full_message %></li>
@@ -10,19 +10,19 @@
     </div>
   <% end %>
   <div>
-    <%= form.label :title, class: "control-label", style: "display: block" %>
-    <%= form.text_field :title, class: "form-control" %>
+    <%= form.label :title, class: 'control-label', style: 'display: block' %>
+    <%= form.text_field :title, class: 'form-control' %>
   </div>
   <div>
-    <%= form.label :ingredients, class: "control-label", style: "display: block" %>
-    <%= form.text_area :ingredients, class: "form-control" %>
+    <%= form.label :ingredients, class: 'control-label', style: 'display: block' %>
+    <%= form.text_area :ingredients, class: 'form-control' %>
   </div>
   <div>
-    <%= form.label :instructions, class: "control-label", style: "display: block" %>
-    <%= form.text_area :instructions, class: "form-control" %>
+    <%= form.label :instructions, class: 'control-label', style: 'display: block' %>
+    <%= form.text_area :instructions, class: 'form-control' %>
   </div>
   <%= hidden_field :recipe, :user_id, value: current_user.id %>
   <div>
-    <%= form.submit 'Submit', class: "btn btn-success mt-2" %>
+    <%= form.submit 'Submit', class: 'btn btn-success mt-2' %>
   </div>
 <% end %>

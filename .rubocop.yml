@@ -5,6 +5,7 @@ require:
 
 AllCops:
   TargetRubyVersion: 3.0
+  NewCops: enable
   Exclude:
     - bin/**/*
     - db/schema.rb
@@ -71,3 +72,6 @@ Layout/LineLength:
 Metrics/BlockLength:
   Exclude:
     - config/environments/development.rb
+
+Spec/Rails/InferredSpecType:
+  Enabled: false

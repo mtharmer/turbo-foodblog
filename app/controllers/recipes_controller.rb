@@ -3,6 +3,7 @@
 class RecipesController < ApplicationController
   before_action :set_recipe, only: %i[show edit update destroy]
   before_action :authenticate_user!, except: %i[index show]
+  before_action :validate_user, only: %i[edit update destroy]
 
   # GET /recipes or /recipes.json
   def index
@@ -18,14 +19,7 @@ class RecipesController < ApplicationController
   end
 
   # GET /recipes/1/edit
-  def edit
-    return unless @recipe.user_id != current_user.id
-
-    respond_to do |format|
-      format.html { redirect_to recipe_url(@recipe), alert: 'You do not have permissions to modify this recipe.' }
-      format.json { render json: { message: 'unauthorized' }, status: :unauthorized }
-    end
-  end
+  def edit; end
 
   # POST /recipes or /recipes.json
   def create
@@ -33,7 +27,7 @@ class RecipesController < ApplicationController
 
     respond_to do |format|
       if @recipe.save
-        format.html { redirect_to recipe_url(@recipe), notice: 'Recipe was successfully created.' }
+        format.html { redirect_to recipe_url(@recipe), notice: t('.notice') }
         format.json { render :show, status: :created, location: @recipe }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -46,7 +40,7 @@ class RecipesController < ApplicationController
   def update
     respond_to do |format|
       if @recipe.update(recipe_params)
-        format.html { redirect_to recipe_url(@recipe), notice: 'Recipe was successfully updated.' }
+        format.html { redirect_to recipe_url(@recipe), notice: t('.notice') }
         format.json { render :show, status: :ok, location: @recipe }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -57,15 +51,10 @@ class RecipesController < ApplicationController
 
   # DELETE /recipes/1 or /recipes/1.json
   def destroy
+    @recipe.destroy
     respond_to do |format|
-      if @recipe.user_id == current_user.id
-        @recipe.destroy
-        format.html { redirect_to recipes_url, notice: 'Recipe was successfully destroyed.' }
-        format.json { head :no_content }
-      else
-        format.html { redirect_to recipe_url(@recipe), alert: 'You do not have permissions to delete this recipe.' }
-        format.json { render json: { message: 'unauthorized' }, status: :unauthorized }
-      end
+      format.html { redirect_to recipes_url, notice: t('.notice') }
+      format.json { head :no_content }
     end
   end
 
@@ -79,5 +68,14 @@ class RecipesController < ApplicationController
   # Only allow a list of trusted parameters through.
   def recipe_params
     params.require(:recipe).permit(:title, :ingredients, :instructions, :user_id)
+  end
+
+  def validate_user
+    return if @recipe.user == current_user
+
+    respond_to do |format|
+      format.html { redirect_to recipe_url(@recipe), alert: t('.alert') }
+      format.json { render :show, status: :unauthorized, location: @recipe }
+    end
   end
 end

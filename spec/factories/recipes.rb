@@ -5,6 +5,6 @@ FactoryBot.define do
     title { Faker::Food.unique.dish }
     ingredients { Faker::Food.ingredient }
     instructions { Faker::Food.description }
-    association :user, factory: :user, strategy: :create
+    user factory: %i[user], strategy: :create
   end
 end
