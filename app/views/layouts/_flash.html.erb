@@ -1,0 +1,25 @@
+<% if notice %>
+  <div id='notice-div' class="alert alert-info alert-dismissible m-1" role="alert">
+    <%= notice %>
+    <button type="button" class="btn btn-close float-right" aria-label="Close" onClick="closeNotice()">
+    </button>
+  </div>
+<% end %>
+
+<% if alert %>
+  <div id='alert-div' class="alert alert-warning alert-dismissible m-1" role="alert">
+    <%= alert %>
+    <button type="button" class="btn btn-close float-right" aria-label="Close" onClick="closeAlert()">
+    </button>
+  </div>
+<% end %>
+
+<script>
+  function closeNotice() {
+    document.getElementById("notice-div").hidden = true;
+  }
+
+  function closeAlert() {
+    document.getElementById("alert-div").hidden = true;
+  }
+</script>
