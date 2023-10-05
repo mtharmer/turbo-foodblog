@@ -4,53 +4,17 @@ version: 2.1
 
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/configuration-reference/#jobs
+
+orbs:
+  ruby-rails-setup: later/ruby-rails-setup@0.0.8
+
 jobs:
   build:
-    working_directory: ~/turbo-foodblog
-    docker:
-      - image: ruby:3.0.4
-        environment:
-          RAILS_ENV: test
-          TURBO_FOODBLOG_DATABASE_PASSWORD: turbo_foodblog
-      - image: cimg/postgres:13.11
-        environment:
-          POSTGRES_USER: turbo_fooblog
-          POSTGRES_DB: turbo_foodblog_test
-          POSTGRES_PASSWORD: turbo_foodblog
+    executor: ruby-rails-setup/default
     steps:
       - checkout
-      - run:
-          name: install dockerize
-          command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
-          environment:
-            DOCKERIZE_VERSION: v0.6.1
-      - run:
-          name: Which bundler?
-          command: bundle -v
-      # Restore Cached Dependencies
-      - restore_cache:
-          name: Restore bundle cache
-          key: turbo-foodblog-{{ checksum "Gemfile.lock" }}
+      - ruby-rails-setup/bundle-install
 
-      - run:
-          name: Bundle Install
-          command: bundle config set --local path 'vendor/bundle'
-
-      # Bundle install dependencies
-      - run: bundle install
-
-      # Cache Dependencies
-      - save_cache:
-          name: Store bundle cache
-          key: turbo-foodblog-{{ checksum "Gemfile.lock" }}
-          paths:
-            - vendor/bundle
-
-      # Wait for DB
-      - run: dockerize -wait tcp://localhost:5432 -timeout 1m
-      - run: bundle exec rails db:create
-      - run: bundle exec rails db:schema:load --trace
-      - run: bundle exec rspec
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
