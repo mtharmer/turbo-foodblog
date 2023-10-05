@@ -5,22 +5,50 @@ version: 2.1
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/configuration-reference/#jobs
 jobs:
-  say-hello:
-    # Specify the execution environment. You can specify an image from Docker Hub or use one of our convenience images from CircleCI's Developer Hub.
-    # See: https://circleci.com/docs/configuration-reference/#executor-job
+  build:
+    working_directory: ~/turbo-foodblog
     docker:
-      - image: cimg/base:stable
-    # Add steps to the job
-    # See: https://circleci.com/docs/configuration-reference/#steps
+      - image: circleci/ruby:3.0.4
+        environment:
+          RAILS_ENV: test
+          TURBO_FOODBLOG_DATABASE_PASSWORD: ""
+      - image: postgres:13.11
+        environment:
+          POSTGRES_USER: turbo_fooblog
+          POSTGRES_DB: turbo_foodblog_test
+          POSTGRES_PASSWORD: ""
     steps:
       - checkout
       - run:
-          name: "Say hello"
-          command: "echo Hello, World!"
+          name: Which bundler?
+          command: bundle -v
+      # Restore Cached Dependencies
+      - restore_cache:
+          name: Restore bundle cache
+          key: turbo-foodblog-{{ checksum "Gemfile.lock" }}
+
+      - run:
+          name: Bundle Install
+          command: bundle check --path vendor/bundle || bundle install --deployment
+
+      # Bundle install dependencies
+      - run: bundle install --path vendor/bundle
+
+      # Cache Dependencies
+      - save_cache:
+          name: Store bundle cache
+          key: turbo-foodblog-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
+
+      # Wait for DB
+      - run: dockerize -wait tcp://localhost:5432 -timeout 1m
+      - run: bundle exec rails db:schema:load --trace
+      - run: bundle exec rspec
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
 workflows:
-  say-hello-workflow:
+  test-workflow:
     jobs:
-      - say-hello
+      - build
