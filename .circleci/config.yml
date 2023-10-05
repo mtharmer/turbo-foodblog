@@ -12,7 +12,7 @@ jobs:
         environment:
           RAILS_ENV: test
           TURBO_FOODBLOG_DATABASE_PASSWORD: turbo_foodblog
-      - image: postgres:13.11
+      - image: cimg/postgres:13
         environment:
           POSTGRES_USER: turbo_fooblog
           POSTGRES_DB: turbo_foodblog_test
@@ -48,6 +48,7 @@ jobs:
 
       # Wait for DB
       - run: dockerize -wait tcp://localhost:5432 -timeout 1m
+      - run: bundle exec rails db:create
       - run: bundle exec rails db:schema:load --trace
       - run: bundle exec rspec
 
