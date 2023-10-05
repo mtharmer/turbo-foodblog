@@ -9,7 +9,7 @@ Rails.application.routes.draw do
   ActiveAdmin.routes(self)
 
   resources :recipes do
-    resources :comments
+    resources :comments, only: %i[create]
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 end
