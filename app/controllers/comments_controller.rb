@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 class CommentsController < InheritedResources::Base
-  belongs_to :recipe, :finder => :find_by_id!, :param => :recipe_id
-  before_action :authenticate_user!, except: %i[index]
-  actions :create, :new, :index
+  belongs_to :recipe
+  before_action :authenticate_user!
+  actions :create
 
   def create
     super do

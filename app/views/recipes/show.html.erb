@@ -18,9 +18,9 @@
     <%= render @recipe.comments %>
 
     <%= form_for [@recipe, Comment.new] do |form| %>
-      <%= form.text_area :message, class: "form-control", placeholder: 'Write something new...' %>
+      <%= form.text_area :message, class: 'form-control', placeholder: 'Write something new...' %>
       <%= form.hidden_field :user_id, value: @recipe.user_id %>
-      <%= form.submit 'Post Comment', class: "btn btn-primary m-2" %>
+      <%= form.submit 'Post Comment', class: 'btn btn-primary m-2' %>
     <% end %>
   </div>
 </div>
