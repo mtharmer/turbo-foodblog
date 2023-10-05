@@ -2,12 +2,17 @@
   <p style='color: green'><%= notice %></p>
 
   <h1>Recipes</h1>
+  <div class="d-grid justify-content-end">
+    <%= link_to 'New recipe', new_recipe_path, class: 'btn btn-primary mt-2' %>
+  </div>
 
   <div id='recipes' class='row row-cols-3'>
     <% @recipes.each do |recipe| %>
       <div class='col text-center'>
         <div class='card m-2'>
-          <%= render recipe %>
+          <h3><%= recipe.title %></h3>
+          <p>Author: <%= recipe.user.email %></p>
+          <p><%= recipe&.comments&.length %> comments</p>
           <p>
             <%= link_to 'Show this recipe', recipe, class: 'btn btn-primary' %>
           </p>
@@ -17,5 +22,4 @@
   </div>
   <hr>
 
-  <%= link_to 'New recipe', new_recipe_path, class: 'btn btn-primary mt-2' %>
 </div>

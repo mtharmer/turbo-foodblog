@@ -12,5 +12,15 @@
     <% if current_user&.id == @recipe.user_id %>
       <%= button_to 'Delete Recipe', @recipe, method: :delete, class: 'btn btn-danger mt-2' %>
     <% end %>
+
+    <br>
+    <h3>Comments</h3>
+    <%= render @recipe.comments %>
+
+    <%= form_for [@recipe, Comment.new] do |form| %>
+      <%= form.text_area :message, class: 'form-control', placeholder: 'Write something new...' %>
+      <%= form.hidden_field :user_id, value: @recipe.user_id %>
+      <%= form.submit 'Post Comment', class: 'btn btn-primary m-2' %>
+    <% end %>
   </div>
 </div>

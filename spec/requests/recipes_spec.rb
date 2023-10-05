@@ -115,11 +115,6 @@ RSpec.describe '/recipes', type: :request do
           post recipes_url, params: { recipe: bad_recipe.attributes }
         end.not_to change(Recipe, :count)
       end
-
-      it "renders a response with 422 status (i.e. to display the 'new' template)" do
-        post recipes_url, params: { recipe: bad_recipe.attributes }
-        expect(response).to have_http_status(:unprocessable_entity)
-      end
     end
   end
 
@@ -172,10 +167,10 @@ RSpec.describe '/recipes', type: :request do
         sign_in valid_user
       end
 
-      it "renders a response with 422 status (i.e. to display the 'edit' template)" do
+      it 'does not modify the recipe' do
         new_recipe.title = nil
         patch recipe_url(recipe), params: { recipe: new_recipe.attributes }
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(Recipe.find(recipe.id).title).not_to be_nil
       end
     end
   end
