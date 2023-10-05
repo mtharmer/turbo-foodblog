@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 
-class RecipesController < ApplicationController
+class RecipesController < InheritedResources::Base
   before_action :set_recipe, only: %i[show edit update destroy]
   before_action :authenticate_user!, except: %i[index show]
   before_action :validate_user, only: %i[edit update destroy]
+  respond_to :html, :json
+  actions :all
 
+=begin
   # GET /recipes or /recipes.json
   def index
     @recipes = Recipe.all
@@ -57,6 +60,7 @@ class RecipesController < ApplicationController
       format.json { head :no_content }
     end
   end
+=end
 
   private
 
