@@ -1,11 +1,7 @@
 <div id="<%= dom_id comment %>">
-  <hr>
-  <p>
-    <em>Posted by </em>
-    <%= comment.user.email %>
-  </p>
 
   <p class="card p-2 bg-light">
+    <em><%= comment.user.email %>: </em>
     <%= comment.message %>
   </p>
 
