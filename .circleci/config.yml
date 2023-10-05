@@ -29,7 +29,7 @@ jobs:
 
       - run:
           name: Bundle Install
-          command: bundle check --path vendor/bundle || bundle install --deployment
+          command: bundle config set --local 'vendor/bundle'
 
       # Bundle install dependencies
       - run: bundle install --path vendor/bundle
