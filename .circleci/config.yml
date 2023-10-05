@@ -8,15 +8,15 @@ jobs:
   build:
     working_directory: ~/turbo-foodblog
     docker:
-      - image: ruby:3.0.4-alpine
+      - image: ruby:3.0.4
         environment:
           RAILS_ENV: test
-          TURBO_FOODBLOG_DATABASE_PASSWORD: ""
+          TURBO_FOODBLOG_DATABASE_PASSWORD: turbo_foodblog
       - image: postgres:13.11
         environment:
           POSTGRES_USER: turbo_fooblog
           POSTGRES_DB: turbo_foodblog_test
-          POSTGRES_PASSWORD: ""
+          POSTGRES_PASSWORD: turbo_foodblog
     steps:
       - checkout
       - run:
