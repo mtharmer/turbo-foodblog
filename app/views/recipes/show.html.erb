@@ -13,6 +13,7 @@
       <%= button_to 'Delete Recipe', @recipe, method: :delete, class: 'btn btn-danger mt-2' %>
     <% end %>
 
-    <%= link_to 'View Comments', recipe_comments_path(@recipe), class: 'btn btn-secondary' %>
+    <%= render @recipe.comments %>
+
   </div>
 </div>
