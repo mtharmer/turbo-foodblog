@@ -12,7 +12,7 @@ jobs:
         environment:
           RAILS_ENV: test
           TURBO_FOODBLOG_DATABASE_PASSWORD: turbo_foodblog
-      - image: cimg/postgres:13
+      - image: cimg/postgres:13.11
         environment:
           POSTGRES_USER: turbo_fooblog
           POSTGRES_DB: turbo_foodblog_test
