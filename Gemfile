@@ -46,12 +46,16 @@ group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[mri mingw x64_mingw]
   gem "erb_lint", "~> 0.5.0", require: false
-  gem "factory_bot_rails", "~> 6.2"
-  gem "faker", "~> 3.2"
-  gem "rspec-rails", "~> 6.0"
   gem "rubocop", "~> 1.56", require: false
   gem "rubocop-rails", "~> 2.21", require: false
   gem "rubocop-rspec", "~> 2.24", require: false
+end
+
+group :test do
+  gem "factory_bot_rails", "~> 6.2"
+  gem "faker", "~> 3.2"
+  gem "rspec-rails", "~> 6.0"
+  gem "rspec-sidekiq", "~> 4.0"
   gem "simplecov", "~> 0.22.0", require: false
 end
 
@@ -69,3 +73,5 @@ end
 gem "devise", "~> 4.9"
 
 gem "activeadmin", "~> 3.0"
+
+gem "sidekiq", "~> 7.1"

@@ -19,6 +19,9 @@ SimpleCov.start 'rails' do
   add_filter %w[/connection /channel /application_job application_mailer]
 end
 
+require 'sidekiq/testing'
+Sidekiq::Testing.fake!
+
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest

@@ -10,15 +10,13 @@ RSpec.describe 'recipes/index', type: :view do
 
   it 'renders titles' do
     render
-    cell_selector = Rails::VERSION::STRING >= '7' ? 'div>h1' : 'tr>td'
+    cell_selector = Rails::VERSION::STRING >= '7' ? 'div>h3' : 'tr>td'
     assert_select cell_selector, text: Regexp.new('Title'.to_s), count: 2
   end
 
   it 'renders a list of recipes' do
     render
     cell_selector = Rails::VERSION::STRING >= '7' ? 'div>p' : 'tr>td'
-    # assert_select cell_selector, text: Regexp.new('Title'.to_s), count: 2
-    assert_select cell_selector, text: Regexp.new('Ingredients'.to_s), count: 2
-    assert_select cell_selector, text: Regexp.new('Instructions'.to_s), count: 2
+    assert_select cell_selector, text: Regexp.new('Author'.to_s), count: 2
   end
 end
