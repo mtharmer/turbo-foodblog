@@ -1,0 +1,15 @@
+div id="#{dom_id recipe}"
+  h1
+    = recipe.title
+  p
+    strong
+      |> Ingredients:
+    = recipe.ingredients
+  p
+    strong
+      |> Instructions:
+    = recipe.instructions
+  p
+    strong
+      |> User:
+    = recipe.user.email

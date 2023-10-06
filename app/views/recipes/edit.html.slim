@@ -1,0 +1,7 @@
+.container
+  h1
+    | Editing recipe
+  = render 'form', recipe: @recipe
+  br
+  = link_to 'Show this recipe', @recipe, class: 'btn btn-primary'
+  = link_to 'Back to recipes', recipes_path, class: 'btn btn-secondary mx-2'
