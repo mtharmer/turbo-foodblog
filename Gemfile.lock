@@ -116,7 +116,6 @@ GEM
       warden (~> 1.2.3)
     diff-lcs (1.5.0)
     docile (1.4.0)
-    dry-logger (1.0.3)
     erb_lint (0.5.0)
       activesupport
       better_html (>= 2.0.1)
@@ -366,7 +365,6 @@ DEPENDENCIES
   cssbundling-rails
   debug
   devise (~> 4.9)
-  dry-logger (~> 1.0)
   erb_lint (~> 0.5.0)
   factory_bot_rails (~> 6.2)
   faker (~> 3.2)

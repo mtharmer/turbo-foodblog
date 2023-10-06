@@ -43,3 +43,7 @@ en:
       alert: 'You do not have permissions to modify this recipe.'
     validate_user:
       alert: 'You do not have permissins to modify this recipe.'
+  comments:
+    create:
+      notice: 'Comment was posted.'
+      alert: 'Unable to post a new comment.'
