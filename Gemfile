@@ -45,10 +45,10 @@ gem "sassc-rails"
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[mri mingw x64_mingw]
-  gem "erb_lint", "~> 0.5.0", require: false
   gem "rubocop", "~> 1.56", require: false
   gem "rubocop-rails", "~> 2.21", require: false
   gem "rubocop-rspec", "~> 2.24", require: false
+  gem "slim_lint", "~> 0.24.0"
 end
 
 group :test do
@@ -63,6 +63,7 @@ group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "better_errors", "~> 2.10"
   gem "binding_of_caller", "~> 1.0"
+  gem "html2slim", "~> 0.2.0"
   gem "web-console"
 
   # Add speed badges [https://github.com/MiniProfiler/rack-mini-profiler]
@@ -77,3 +78,6 @@ gem "devise", "~> 4.9"
 gem "activeadmin", "~> 3.0"
 
 gem "sidekiq", "~> 7.1"
+
+gem "slim", "~> 5.1"
+

@@ -85,13 +85,6 @@ GEM
       erubi (>= 1.0.0)
       rack (>= 0.9.0)
       rouge (>= 1.0.0)
-    better_html (2.0.2)
-      actionview (>= 6.0)
-      activesupport (>= 6.0)
-      ast (~> 2.0)
-      erubi (~> 1.4)
-      parser (>= 2.4)
-      smart_properties
     bindex (0.8.1)
     binding_of_caller (1.0.0)
       debug_inspector (>= 0.0.1)
@@ -116,13 +109,6 @@ GEM
       warden (~> 1.2.3)
     diff-lcs (1.5.0)
     docile (1.4.0)
-    erb_lint (0.5.0)
-      activesupport
-      better_html (>= 2.0.1)
-      parser (>= 2.7.1.4)
-      rainbow
-      rubocop
-      smart_properties
     erubi (1.12.0)
     factory_bot (6.2.1)
       activesupport (>= 5.0.0)
@@ -140,6 +126,9 @@ GEM
     has_scope (0.8.1)
       actionpack (>= 5.2)
       activesupport (>= 5.2)
+    hpricot (0.8.6)
+    html2slim (0.2.0)
+      hpricot
     i18n (1.14.1)
       concurrent-ruby (~> 1.0)
     inherited_resources (1.13.1)
@@ -327,7 +316,12 @@ GEM
       simplecov_json_formatter (~> 0.1)
     simplecov-html (0.12.3)
     simplecov_json_formatter (0.1.4)
-    smart_properties (1.17.0)
+    slim (5.1.1)
+      temple (~> 0.10.0)
+      tilt (>= 2.1.0)
+    slim_lint (0.24.0)
+      rubocop (>= 1.0, < 2.0)
+      slim (>= 3.0, < 6.0)
     sprockets (4.2.1)
       concurrent-ruby (~> 1.0)
       rack (>= 2.2.4, < 4)
@@ -336,6 +330,7 @@ GEM
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
     stringio (3.0.8)
+    temple (0.10.3)
     thor (1.2.2)
     tilt (2.3.0)
     timeout (0.4.0)
@@ -365,9 +360,9 @@ DEPENDENCIES
   cssbundling-rails
   debug
   devise (~> 4.9)
-  erb_lint (~> 0.5.0)
   factory_bot_rails (~> 6.2)
   faker (~> 3.2)
+  html2slim (~> 0.2.0)
   jbuilder
   pg (~> 1.1)
   puma (~> 5.0)
@@ -381,6 +376,8 @@ DEPENDENCIES
   sassc-rails
   sidekiq (~> 7.1)
   simplecov (~> 0.22.0)
+  slim (~> 5.1)
+  slim_lint (~> 0.24.0)
   sprockets-rails
   tzinfo-data
   web-console

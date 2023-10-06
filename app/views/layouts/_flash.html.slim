@@ -1,0 +1,12 @@
+- if notice
+  #notice-div.alert.alert-info.alert-dismissible.m-1[role="alert"]
+    = notice
+    button.btn.btn-close.float-right[type="button" aria-label="Close" onclick="closeNotice()"]
+- if alert
+  #alert-div.alert.alert-warning.alert-dismissible.m-1[role="alert"]
+    = alert
+    button.btn.btn-close.float-right[type="button" aria-label="Close" onclick="closeAlert()"]
+script
+  |
+    function closeNotice() { document.getElementById("notice-div").hidden = true; }
+    function closeAlert() { document.getElementById("alert-div").hidden = true; }
