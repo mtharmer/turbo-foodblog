@@ -2,19 +2,27 @@
   p[style="color: green"]
     = notice
   = render @recipe
-  .mt-2
-    = link_to 'Back to recipes', recipes_path, class: 'btn btn-secondary'
-    - if current_user&.id == @recipe.user_id
-      = link_to 'Edit this recipe', edit_recipe_path(@recipe), class: 'btn btn-primary mx-2'
-      = link_to 'Delete Recipe', @recipe, method: :delete, class: 'btn btn-danger'
-    hr
-    h3
-      | Comments
-    = render @recipe.comments
+  = link_to 'Back to recipes', recipes_path, class: 'btn btn-secondary'
+  - if can? :edit, @recipe
+    = link_to 'Edit this recipe', edit_recipe_path(@recipe), class: 'btn btn-primary mx-2'
+  - if can? :destroy, @recipe
+    = link_to 'Delete Recipe', @recipe, method: :delete, class: 'btn btn-danger'
+  hr
+  h3
+    | Comments
+  = render @recipe.comments
+  - if can? :create, Comment
     = form_for([@recipe, @recipe.comments.build]) do |form|
       .field
         = form.text_area :message, class: 'form-control', placeholder: 'Write something new...'
-      = form.hidden_field :user_id, value: @recipe.user_id
+      = form.hidden_field :user_id, value: current_user.id
       = form.hidden_field :recipe_id, value: @recipe.id
       .actions
-        = form.submit 'Post Comment', class: 'btn btn-primary m-2'
+        = form.submit 'Post Comment', class: 'btn btn-primary mt-2'
+  - else
+    p
+      span
+        = link_to 'Log In', new_user_session_path
+        |<> or
+        = link_to 'Sign Up', new_user_registration_path
+        |< to leave a comment!

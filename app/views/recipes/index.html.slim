@@ -4,7 +4,8 @@
   h1
     | Recipes
   .d-grid.justify-content-end
-    = link_to 'New recipe', new_recipe_path, class: 'btn btn-primary mt-2'
+    - if can? :create, Recipe
+      = link_to 'New recipe', new_recipe_path, class: 'btn btn-primary mt-2'
   #recipes.row.row-cols-3.mx-auto
     - @recipes.each do |recipe|
       .col.text-center

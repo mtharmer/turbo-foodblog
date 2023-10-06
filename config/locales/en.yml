@@ -31,6 +31,7 @@
 
 en:
   hello: 'Hello world'
+  cancan_not_found: 'The requested page could not be found.'
   recipes:
     create:
       notice: 'Recipe was successfully created.'
