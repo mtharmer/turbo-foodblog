@@ -1,15 +1,16 @@
 # frozen_string_literal: true
 
-class CommentsController < InheritedResources::Base
-  belongs_to :recipe
+class CommentsController < ApplicationController
   before_action :authenticate_user!
-  actions :create
+  respond_to :html
 
   def create
-    super do
-      respond_to do |format|
-        format.html { redirect_to recipe_url(@recipe) and return }
-      end
+    @comment = Comment.new(comment_params)
+    # binding.break
+    if @comment.save
+      redirect_to recipe_url(params[:recipe_id]), notice: t('.notice')
+    else
+      redirect_to recipe_url(params[:recipe_id]), alert: t('.alert')
     end
   end
 

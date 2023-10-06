@@ -20,6 +20,7 @@
     <%= form_for [@recipe, Comment.new] do |form| %>
       <%= form.text_area :message, class: 'form-control', placeholder: 'Write something new...' %>
       <%= form.hidden_field :user_id, value: @recipe.user_id %>
+      <%= form.hidden_field :recipe_id, value: @recipe.id %>
       <%= form.submit 'Post Comment', class: 'btn btn-primary m-2' %>
     <% end %>
   </div>
