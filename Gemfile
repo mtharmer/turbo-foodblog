@@ -81,3 +81,4 @@ gem "sidekiq", "~> 7.1"
 
 gem "slim", "~> 5.1"
 
+gem "cancancan", "~> 3.5"

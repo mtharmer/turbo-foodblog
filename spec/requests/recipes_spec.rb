@@ -213,10 +213,10 @@ RSpec.describe '/recipes', type: :request do
         end.not_to change(Recipe, :count)
       end
 
-      it 'redirects the user back to the recipe page' do
+      it 'redirects the user back to the home page' do
         recipe = create(:recipe)
         delete recipe_url(recipe)
-        expect(response).to redirect_to(recipe_url(recipe))
+        expect(response).to redirect_to(root_url)
       end
     end
 

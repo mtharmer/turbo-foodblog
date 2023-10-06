@@ -3,15 +3,11 @@
 class CommentsController < ApplicationController
   before_action :authenticate_user!
   respond_to :html
+  load_and_authorize_resource
 
   def create
-    @comment = Comment.new(comment_params)
-    # binding.break
-    if @comment.save
-      redirect_to recipe_url(params[:recipe_id]), notice: t('.notice')
-    else
-      redirect_to recipe_url(params[:recipe_id]), alert: t('.alert')
-    end
+    redirect_to recipe_url(params[:recipe_id]),
+                Comment.create(comment_params).persisted? ? { notice: t('.notice') } : { alert: t('.alert') }
   end
 
   private
