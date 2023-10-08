@@ -11,6 +11,29 @@ ActiveAdmin.register_page 'Dashboard' do
       end
     end
 
+    columns do
+      column do
+        panel 'Recent Recipes' do
+          ul do
+            Recipe.limit(5).map do |recipe|
+              li link_to recipe.title, recipe_path(recipe)
+            end
+          end
+        end
+      end
+      column do
+        panel 'Comments' do
+          span Comment.count
+        end
+        panel 'Users' do
+          span User.count
+        end
+        panel 'Recipes' do
+          span Recipe.count
+        end
+      end
+    end
+
     # Here is an example of a simple dashboard with columns and panels.
     #
     # columns do
