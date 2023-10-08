@@ -5,6 +5,7 @@ FactoryBot.define do
     title { Faker::Food.unique.dish }
     ingredients { Faker::Food.ingredient }
     instructions { Faker::Food.description }
+    recipe_category { nil }
     user factory: %i[user], strategy: :create
   end
 end
