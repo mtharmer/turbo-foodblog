@@ -17,6 +17,10 @@
   div
     = form.label :instructions, class: 'control-label'
     = form.text_area :instructions, class: 'form-control'
+  div
+    = form.label :recipe_category_id, class: 'control-label'
+    = form.select :recipe_category_id, options_for_select(RecipeCategory.all.collect { |x| [x.name, x.id] }),
+                  { prompt: 'Select a category' }, { class: 'form-select' }
   = hidden_field :recipe, :user_id, value: recipe.user_id
   div
     = form.submit 'Submit', class: 'btn btn-success mt-2'

@@ -10,7 +10,10 @@ class RecipesController < ApplicationController
 
   # GET /recipes or /recipes.json
   def index
-    @recipes = base_recipes_query.all
+    @recipes = base_recipes_query
+    return if query_params[:recipe_category].blank?
+
+    @recipes = @recipes.where(recipe_category_id: query_params[:recipe_category].to_i)
   end
 
   # GET /recipes/1 or /recipes/1.json
@@ -63,6 +66,10 @@ class RecipesController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def recipe_params
-    params.require(:recipe).permit(:title, :ingredients, :instructions, :user_id)
+    params.require(:recipe).permit(:title, :ingredients, :instructions, :user_id, :recipe_category_id)
+  end
+
+  def query_params
+    params.permit!
   end
 end

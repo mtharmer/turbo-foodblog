@@ -5,8 +5,6 @@ require 'rails_helper'
 RSpec.describe 'Admin::DashboardController', :only do
   let!(:admin) { create(:admin_user, email: 'adminuser@example.com', password: 'password') }
 
-  let!(:comment) { create(:comment) }
-
   def log_in_admin_user
     visit new_admin_user_session_path
     fill_in 'Email', with: admin.email
@@ -15,6 +13,7 @@ RSpec.describe 'Admin::DashboardController', :only do
   end
 
   before do
+    create(:comment)
     log_in_admin_user
   end
 

@@ -13,3 +13,7 @@ div id="#{dom_id recipe}"
     strong
       |> User:
     = recipe.user.email
+  p
+    strong
+      |> Category:
+    = recipe.recipe_category&.name || ''
