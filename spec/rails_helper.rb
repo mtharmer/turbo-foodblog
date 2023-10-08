@@ -1,3 +1,8 @@
+require 'simplecov'
+SimpleCov.start 'rails' do
+  add_filter %w[/connection /channel /application_job application_mailer]
+end
+
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 require 'spec_helper'
 ENV['RAILS_ENV'] ||= 'test'
@@ -10,6 +15,11 @@ require 'rspec/rails'
 require 'capybara/rails'
 require 'capybara/rspec'
 Capybara.server = :puma
+
+require 'sidekiq/testing'
+Sidekiq::Testing.fake!
+
+require 'rspec/retry'
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -41,6 +51,27 @@ RSpec.configure do |config|
   # examples within a transaction, remove the following line or assign false
   # instead of true.
   config.use_transactional_fixtures = true
+
+  # RETRY SETTINGS
+  # show retry status in spec process
+  config.verbose_retry = true
+
+  # show exception that triggers a retry if verbose_retry is set to true
+  config.display_try_failure_messages = true
+
+  # run retry only on features
+  config.around :each, :js do |example|
+    example.run_with_retry retry: 3
+  end
+
+  # callback to be run between retries
+  config.retry_callback = proc do |ex|
+    # run some additional clean up task - can be filtered by example metadata
+    if ex.metadata[:js]
+      Capybara.reset!
+    end
+  end
+  #####
 
   # You can uncomment this line to turn off ActiveRecord support entirely.
   # config.use_active_record = false

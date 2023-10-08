@@ -58,6 +58,7 @@ gem "sprockets-rails"
 gem "tzinfo-data", platforms: %i[mingw mswin x64_mingw jruby]
 
 group :development, :test do
+  gem "benchmark-ips"
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[mri mingw x64_mingw]
   gem "rubocop", "~> 1.56", require: false
