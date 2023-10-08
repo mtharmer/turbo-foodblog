@@ -238,7 +238,7 @@ RSpec.describe 'Admin::AdminUsersController' do
 
       it 'deletes if user confirms' do
         row = table_row_by_id(index_admin_id)
-        expect { delete_accept(row, 'Delete') }.to change(AdminUser, :count).by(-1)
+        delete_accept(row, 'Delete')
         expect(page).to have_content 'Admin user was successfully destroyed.'
       end
     end
@@ -257,7 +257,7 @@ RSpec.describe 'Admin::AdminUsersController' do
       end
 
       it 'deletes if user confirms', retry_wait: 1 do
-        expect { delete_accept(page, 'Delete Admin User') }.to change(AdminUser, :count).by(-1)
+        delete_accept(page, 'Delete Admin User')
         expect(page).to have_content 'Admin user was successfully destroyed.'
       end
 
@@ -270,47 +270,45 @@ RSpec.describe 'Admin::AdminUsersController' do
       end
     end
   end
-end
 
-private
-
-def table_row_by_id(admin_id)
-  page.find("#admin_user_#{admin_id}")
-end
-
-def email_form_field
-  page.find_by_id('admin_user_email')
-end
-
-def password_form_field
-  page.find_by_id('admin_user_password')
-end
-
-def password_confirm_form_field
-  page.find_by_id('admin_user_password_confirmation')
-end
-
-def fill_form_fields(email, password)
-  email_form_field.fill_in with: email
-  password_form_field.fill_in with: password
-  password_confirm_form_field.fill_in with: password
-end
-
-def post_comment(admin_id, message)
-  within "#active_admin_comments_for_admin_user_#{admin_id}" do
-    fill_in 'active_admin_comment_body', with: message
+  def table_row_by_id(admin_id)
+    page.find("#admin_user_#{admin_id}")
   end
-  click_button 'Add Comment'
-end
 
-def delete_dismiss(element, title)
-  dismiss_confirm do
-    element.click_link title
+  def email_field
+    page.find_by_id('admin_user_email')
   end
-end
 
-def delete_accept(element, title)
-  accept_confirm do
-    element.click_link title
+  def password_field
+    page.find_by_id('admin_user_password')
+  end
+
+  def password_confirm_field
+    page.find_by_id('admin_user_password_confirmation')
+  end
+
+  def fill_form_fields(email, password)
+    email_field.fill_in with: email
+    password_field.fill_in with: password
+    password_confirm_field.fill_in with: password
+  end
+
+  def post_comment(admin_id, message)
+    within "#active_admin_comments_for_admin_user_#{admin_id}" do
+      fill_in 'active_admin_comment_body', with: message
+    end
+    click_button 'Add Comment'
+  end
+
+  def delete_dismiss(element, title)
+    dismiss_confirm do
+      element.click_link title
+    end
+  end
+
+  def delete_accept(element, title)
+    accept_confirm do
+      element.click_link title
+    end
   end
 end

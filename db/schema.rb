@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_06_020927) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_08_020926) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -78,6 +78,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_06_020927) do
     t.index ["user_id"], name: "index_comments_on_user_id"
   end
 
+  create_table "recipe_categories", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_recipe_categories_on_name", unique: true
+  end
+
   create_table "recipes", force: :cascade do |t|
     t.string "title"
     t.text "ingredients"
@@ -85,6 +92,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_06_020927) do
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "recipe_category_id"
+    t.index ["recipe_category_id"], name: "index_recipes_on_recipe_category_id"
     t.index ["title", "user_id"], name: "index_recipes_on_title_and_user_id", unique: true
     t.index ["user_id"], name: "index_recipes_on_user_id"
   end
@@ -113,6 +122,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_06_020927) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "comments", "recipes"
   add_foreign_key "comments", "users"
+  add_foreign_key "recipes", "recipe_categories"
   add_foreign_key "recipes", "users"
   add_foreign_key "samples", "users"
 end
