@@ -11,9 +11,9 @@ ActiveAdmin.register_page 'Dashboard' do
     #   end
     # end
 
-    columns do
-      column do
-        panel 'Recent Recipes' do
+    columns id: 'dashboard_columns' do
+      column id: 'dashboard_column_1' do
+        panel 'Recent Recipes', id: 'recent_recipes_panel' do
           ul do
             Recipe.limit(5).map do |recipe|
               li link_to recipe.title, recipe_path(recipe)
@@ -21,14 +21,14 @@ ActiveAdmin.register_page 'Dashboard' do
           end
         end
       end
-      column do
-        panel 'Comments' do
+      column id: 'dashboard_column_2' do
+        panel 'Comments', id: 'comments_panel' do
           span Comment.count
         end
-        panel 'Users' do
+        panel 'Users', id: 'users_panel' do
           span User.count
         end
-        panel 'Recipes' do
+        panel 'Recipes', id: 'recipes_panel' do
           span Recipe.count
         end
       end

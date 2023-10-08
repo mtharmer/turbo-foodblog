@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe AdminUser, type: :model do
   it 'allows a user to be created' do
-    expect { create(:admin_user) }.to change(AdminUser, :count).by(1)
+    expect { create(:admin_user) }.to change(described_class, :count).by(1)
   end
 
   it 'requires an email address' do

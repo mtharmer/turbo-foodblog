@@ -7,29 +7,35 @@
 #
 #   movies = Movie.create([{ name: "Star Wars" }, { name: "Lord of the Rings" }])
 #   Character.create(name: "Luke", movie: movies.first)
+require 'factory_bot_rails'
+require 'faker'
+include FactoryBot::Syntax::Methods # rubocop:disable Style/MixinUsage
+
+# Do not seed unless we're in development
 if Rails.env.development?
-  emails = []
-  5.times { |i| emails << "sample#{i+1}@example.com" }
+  # Destroy all users except our test user
+  User.where.not(email: 'user@example.com').destroy_all
 
-  recipes = []
-  10.times { |i| recipes << "Recipe #{i+1}" }
+  # Attempt to create our active admin user (ok if it fails)
+  AdminUser.create(email: 'admin@example.com', password: 'password',
+                   password_confirmation: 'password')
 
-  comments = []
-  10.times { |i| comments << "Comment #{i+1}" }
+  # Attempt to create our active admin user (ok if it fails)
+  User.create(email: 'user@example.com', password: 'somepass')
 
-  User.where(email: emails).destroy_all
-  AdminUser.find_by(email: 'admin@example.com').destroy
+  # Find our test user
+  user = User.find_by(email: 'user@example.com')
 
-  AdminUser.create!(email: 'admin@example.com', password: 'password',
-                    password_confirmation: 'password')
+  # Create a list of 50 recipes, each of which will create its own new user
+  recipes = create_list(:recipe, 50)
 
-  emails.each do |email|
-    user = User.create!(email: email, password: 'somepass')
-    recipes.each do |title|
-      recipe = user.recipes.create!(title: title)
-      comments.each do |comment|
-        recipe.comments.create!(message: comment, user: user)
-      end
-    end
+  # Iterate over the new list of recipes to create comments on all the recipes.
+  recipes.each do |recipe|
+    # Create a batch of comments from the receipe's user;
+    FactoryBot.create_list(:comment, 10, recipe: recipe, user: recipe.user)
+    # Our test user;
+    FactoryBot.create_list(:comment, 5, recipe: recipe, user: user)
+    # And from newly created users
+    FactoryBot.create_list(:comment, 5, recipe: recipe)
   end
 end

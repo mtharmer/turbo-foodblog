@@ -3,19 +3,30 @@
 require 'rails_helper'
 
 RSpec.describe 'Admin::AdminUsersController' do
-  email = 'adminuser@example.com'
-  password = 'password'
-  let!(:admin) { build(:admin_user, email: email, password: password) }
+  delete_text = 'Delete'
+  delete_link = 'Delete Admin User'
+  delete_success = 'Admin user was successfully destroyed.'
+  edit_title = 'Edit Admin User'
+  new_title = 'New Admin User'
+  update_button_text = 'Update Admin user'
 
-  def log_in_admin_user(email = 'adminuser@example.com', password = 'password')
+  AdminUser.destroy_all
+  let!(:admin) { create(:admin_user, email: 'adminuser@example.com', password: 'password') }
+  let(:admin_id) { admin.id.to_s }
+
+  let!(:edit_admin) { create(:admin_user, email: 'editadmin@example.com', password: 'password') }
+
+  let!(:index_delete_admin) { create(:admin_user, email: 'index_delete_admin@example.com', password: 'password') }
+  let!(:direct_delete_admin) { create(:admin_user, email: 'direct_delete_admin@example.com', password: 'password') }
+
+  def log_in_admin_user
     visit new_admin_user_session_path
-    fill_in 'Email', with: email
-    fill_in 'Password', with: password
+    fill_in 'Email', with: admin.email
+    fill_in 'Password', with: admin.password
     click_button 'Login'
   end
 
   before do
-    admin.save
     log_in_admin_user
   end
 
@@ -53,8 +64,6 @@ RSpec.describe 'Admin::AdminUsersController' do
   end
 
   describe 'GET show' do
-    let(:admin_id) { admin.id.to_s }
-
     it 'can route directly to the page' do
       visit admin_admin_user_url(admin_id)
       expect(page).to have_content 'Admin User Details'
@@ -109,13 +118,13 @@ RSpec.describe 'Admin::AdminUsersController' do
   describe 'create' do
     it 'can route directly to the page' do
       visit new_admin_admin_user_path
-      expect(page.find_by_id('page_title')).to have_content 'New Admin User'
+      expect(page.find_by_id('page_title')).to have_content new_title
     end
 
     it 'can route through the index page' do
       visit admin_admin_users_path
       click_link 'New Admin User'
-      expect(page.find_by_id('page_title')).to have_content 'New Admin User'
+      expect(page.find_by_id('page_title')).to have_content new_title
     end
 
     context 'when loading the page' do
@@ -139,34 +148,29 @@ RSpec.describe 'Admin::AdminUsersController' do
   end
 
   describe 'edit' do
-    let(:admin_id) { admin.id.to_s }
-
     it 'can route directly to the page' do
-      visit edit_admin_admin_user_url(admin_id)
-      expect(page.find_by_id('page_title')).to have_content 'Edit Admin User'
+      visit edit_admin_admin_user_url(admin)
+      expect(page.find_by_id('page_title')).to have_content edit_title
       expect(page).to have_content 'adminuser@example.com'
     end
 
     it 'can route through the index page' do
       click_link 'Admin Users'
       table_row_by_id(admin_id).click_link 'Edit'
-      expect(page.find_by_id('page_title')).to have_content 'Edit Admin User'
+      expect(page.find_by_id('page_title')).to have_content edit_title
       expect(page).to have_content 'adminuser@example.com'
     end
 
     it 'can route through the detail page' do
-      visit admin_admin_user_url(admin_id)
+      visit admin_admin_user_url(admin)
       click_link 'Edit Admin User'
-      expect(page.find_by_id('page_title')).to have_content 'Edit Admin User'
+      expect(page.find_by_id('page_title')).to have_content edit_title
       expect(page).to have_content 'adminuser@example.com'
     end
 
     context 'when loading the page' do
-      let!(:new_admin) { create(:admin_user, email: 'newadmin@example.com', password: 'password') }
-      let!(:new_id) { new_admin.id.to_s }
-
       before do
-        visit edit_admin_admin_user_url(new_id)
+        visit edit_admin_admin_user_url(edit_admin)
       end
 
       it 'loads a form' do
@@ -180,7 +184,7 @@ RSpec.describe 'Admin::AdminUsersController' do
       end
 
       it 'displays a submit and cancel button' do
-        expect(page.find_button('Update Admin user')).to be_truthy
+        expect(page.find_button(update_button_text)).to be_truthy
         expect(page.find_link('Cancel')).to be_visible
       end
 
@@ -191,81 +195,66 @@ RSpec.describe 'Admin::AdminUsersController' do
     end
 
     context 'when editing an admin user' do
-      let!(:new_admin) { create(:admin_user, email: 'newadmin@example.com', password: 'password') }
-      let!(:new_id) { new_admin.id.to_s }
-
       before do
-        visit edit_admin_admin_user_url(new_id)
+        visit edit_admin_admin_user_url(edit_admin)
       end
 
-      it 'creates a user on submit' do
-        fill_form_fields('newadmin@example.com', 'newpassword')
-        click_button 'Update Admin user'
+      it 'updates the user on submit' do
+        fill_form_fields(edit_admin.email, edit_admin.password)
+        click_button update_button_text
         expect(page).to have_content 'Admin user was successfully updated.'
-        expect(page).to have_current_path admin_admin_user_path(new_id)
+        expect(page).to have_current_path admin_admin_user_path(edit_admin)
       end
 
       it 'requires new login if admin changes own password' do
-        visit edit_admin_admin_user_url(admin_id)
+        visit edit_admin_admin_user_url(admin)
         fill_form_fields('adminuser@example.com', 'newpassword')
-        click_button 'Update Admin user'
+        click_button update_button_text
         expect(page).to have_content 'You need to sign in or sign up before continuing'
         expect(page).to have_current_path new_admin_user_session_path
       end
     end
   end
 
-  describe 'delete', :js do
-    let(:admin_id) { admin.id.to_s }
-    let!(:index_admin) { create(:admin_user, email: 'newadmin1@example.com', password: 'password') }
-    let!(:direct_admin) { create(:admin_user, email: 'newadmin2@example.com', password: 'password') }
-    let!(:index_admin_id) { index_admin.id.to_s }
-
+  describe 'delete' do
     context 'when coming from the index view' do
       before do
         visit admin_admin_users_path
       end
 
       it 'has a delete option in the table row' do
-        row = table_row_by_id(index_admin_id)
-        expect(row.find_link('Delete')).to be_truthy
+        row = table_row_by_id(index_delete_admin.id)
+        expect(row.find_link(delete_text)).to be_truthy
       end
 
-      it 'does not delete if user cancels' do
-        row = table_row_by_id(index_admin_id)
-        expect { delete_dismiss(row, 'Delete') }.not_to change(AdminUser, :count)
+      it 'does not delete if user cancels', :js do
+        row = table_row_by_id(index_delete_admin.id)
+        expect { delete_dismiss(row, delete_text) }.not_to change(AdminUser, :count)
       end
 
-      it 'deletes if user confirms' do
-        row = table_row_by_id(index_admin_id)
-        delete_accept(row, 'Delete')
-        expect(page).to have_content 'Admin user was successfully destroyed.'
+      it 'deletes if user confirms', :js do
+        row = table_row_by_id(index_delete_admin.id)
+        delete_accept(row, delete_text)
+        expect(page).to have_content delete_success
       end
     end
 
     context 'when coming from the detail view' do
       before do
-        visit admin_admin_user_path(direct_admin)
+        visit admin_admin_user_path(direct_delete_admin)
       end
 
       it 'has a delete link' do
-        expect(page.find_link('Delete Admin User')).to be_truthy
+        expect(page.find_link(delete_link)).to be_truthy
       end
 
-      it 'does not delete if user cancels' do
-        expect { delete_dismiss(page, 'Delete Admin User') }.not_to change(AdminUser, :count)
+      it 'does not delete if user cancels', :js do
+        expect { delete_dismiss(page, delete_link) }.not_to change(AdminUser, :count)
       end
 
-      it 'deletes if user confirms', retry_wait: 1 do
-        delete_accept(page, 'Delete Admin User')
-        expect(page).to have_content 'Admin user was successfully destroyed.'
-      end
-
-      it 'routes to index page after delete' do
-        accept_confirm do
-          click_link('Delete Admin User')
-        end
-        expect(page).to have_content 'Admin user was successfully destroyed.'
+      it 'deletes and redirects if user confirms', :js, retry_wait: 1 do
+        delete_accept(page, delete_link)
+        expect(page).to have_content delete_success
         expect(page).to have_current_path admin_admin_users_path
       end
     end

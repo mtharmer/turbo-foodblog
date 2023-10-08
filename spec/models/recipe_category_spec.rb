@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe RecipeCategory, type: :model do
   it 'allows a category to be created' do
-    expect { create(:recipe_category) }.to change(RecipeCategory, :count).by(1)
+    expect { create(:recipe_category) }.to change(described_class, :count).by(1)
   end
 
   it 'requires a name to be specified' do

@@ -61,6 +61,7 @@ group :development, :test do
   gem "benchmark-ips"
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[mri mingw x64_mingw]
+  gem "factory_bot_rails", "~> 6.2"
   gem "rubocop", "~> 1.56", require: false
   gem "rubocop-rails", "~> 2.21", require: false
   gem "rubocop-rspec", "~> 2.24", require: false
@@ -69,7 +70,6 @@ end
 
 group :test do
   gem "capybara", "~> 3.39"
-  gem "factory_bot_rails", "~> 6.2"
   gem "faker", "~> 3.2"
   gem "rspec-rails", "~> 6.0"
   gem "rspec-retry", "~> 0.6.2"

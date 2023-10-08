@@ -3,9 +3,17 @@
 require 'rails_helper'
 
 RSpec.describe 'Admin::RecipeCategoriesController' do
+  comment_message = 'Cool new comment'
+  edit_page_title = 'Edit Recipe Category'
+  delete_success_msg = 'Recipe category was successfully destroyed'
+  delete_button_text = 'Delete Recipe Category'
+
+  RecipeCategory.destroy_all
   let!(:admin) { create(:admin_user, email: 'adminuser@example.com', password: 'password') }
   let!(:category) { create(:recipe_category, name: 'American Food') }
-  let!(:category_id) { category.id.to_s }
+  let!(:edit_category) { create(:recipe_category, name: 'German') }
+  let!(:index_delete_category) { create(:recipe_category, name: 'Delete Me') }
+  let!(:detail_delete_category) { create(:recipe_category, name: 'No, Delete Me') }
 
   def log_in_admin_user
     visit new_admin_user_session_path
@@ -54,7 +62,7 @@ RSpec.describe 'Admin::RecipeCategoriesController' do
     context 'when navigating' do
       it 'can be accessed through the index page' do
         visit admin_recipe_categories_path
-        table_row_by_id(category_id).click_link 'View'
+        table_row_by_id(category.id).click_link 'View'
         expect(page).to have_current_path admin_recipe_category_path(category)
         expect(page).to have_content 'Recipe Category Details'
       end
@@ -67,38 +75,36 @@ RSpec.describe 'Admin::RecipeCategoriesController' do
 
     context 'when loading the page' do
       before do
-        visit admin_recipe_category_url(category_id)
+        visit admin_recipe_category_url(category.id.to_s)
       end
 
-      let(:attributes_element) { page.find "#attributes_table_recipe_category_#{category_id}" }
-
       it 'has a contents table' do
-        expect(attributes_element).to be_truthy
+        expect(attributes_element(category.id)).to be_truthy
       end
 
       it 'lists the expected fields' do
-        expect(attributes_element).to have_content 'Name'
-        expect(attributes_element).to have_content 'Created At'
+        expect(attributes_element(category.id)).to have_content 'Name'
+        expect(attributes_element(category.id)).to have_content 'Created At'
       end
 
       it 'lists the expected values' do
-        expect(attributes_element).to have_content 'American Food'
+        expect(attributes_element(category.id)).to have_content 'American Food'
       end
 
       it 'has a comments section' do
-        expect(comment_element(category_id)).to be_truthy
+        expect(comment_element(category.id)).to be_truthy
       end
 
       it 'can post a comment' do
-        post_comment(category_id, 'Cool new comment')
+        post_comment(category.id, comment_message)
         expect(page).to have_content 'Comment was successfully created.'
       end
 
       it 'lists any created comments' do
-        post_comment(category_id, 'Cool new comment')
-        content = comment_element(category_id)
+        post_comment(category.id, comment_message)
+        content = comment_element(category.id)
         expect(content).to have_content 'Comments (1)'
-        expect(content).to have_content 'Cool new comment'
+        expect(content).to have_content comment_message
       end
     end
   end
@@ -134,36 +140,30 @@ RSpec.describe 'Admin::RecipeCategoriesController' do
 
   describe 'edit' do
     context 'when navigating' do
-      let(:expected_title) { 'Edit Recipe Category' }
-      let(:expected_category) { 'American' }
-
       it 'can route directly to the page' do
-        visit edit_admin_recipe_category_url(category_id)
-        expect(page.find_by_id('page_title')).to have_content expected_title
-        expect(page).to have_content expected_category
+        visit edit_admin_recipe_category_url(category.id.to_s)
+        expect(page.find_by_id('page_title')).to have_content edit_page_title
+        expect(page).to have_content category.name
       end
 
       it 'can route through the index page' do
         click_link 'Recipe Categories'
-        table_row_by_id(category_id).click_link 'Edit'
-        expect(page.find_by_id('page_title')).to have_content expected_title
-        expect(page).to have_content expected_category
+        table_row_by_id(category.id).click_link 'Edit'
+        expect(page.find_by_id('page_title')).to have_content edit_page_title
+        expect(page).to have_content category.name
       end
 
       it 'can route through the detail page' do
-        visit admin_recipe_category_url(category_id)
-        click_link expected_title
-        expect(page.find_by_id('page_title')).to have_content expected_title
-        expect(page).to have_content expected_category
+        visit admin_recipe_category_url(category.id.to_s)
+        click_link edit_page_title
+        expect(page.find_by_id('page_title')).to have_content edit_page_title
+        expect(page).to have_content category.name
       end
     end
 
     context 'when loading the page' do
-      let!(:edit_category) { create(:recipe_category, name: 'German') }
-      let!(:edit_id) { edit_category.id.to_s }
-
       before do
-        visit edit_admin_recipe_category_url(edit_id)
+        visit edit_admin_recipe_category_url(edit_category.id.to_s)
       end
 
       it 'loads a form' do
@@ -193,59 +193,48 @@ RSpec.describe 'Admin::RecipeCategoriesController' do
     end
   end
 
-  describe 'delete', :js do
-    let(:success_msg) { 'Recipe category was successfully destroyed' }
-
+  describe 'delete' do
     context 'when navigating from the index view' do
-      let!(:delete_category) { create(:recipe_category) }
-      let!(:delete_id) { delete_category.id.to_s }
-
-      before do
-        visit admin_recipe_categories_path
-      end
+      before { visit admin_recipe_categories_path }
 
       it 'has a delete option in the table row' do
-        row = table_row_by_id(delete_id)
+        row = table_row_by_id(index_delete_category.id)
         expect(row.find_link('Delete')).to be_truthy
       end
 
-      it 'does not delete if user cancels' do
-        row = table_row_by_id(delete_id)
+      it 'does not delete if user cancels', :js do
+        row = table_row_by_id(index_delete_category.id)
         expect { delete_dismiss(row, 'Delete') }.not_to change(RecipeCategory, :count)
       end
 
-      it 'deletes if user confirms' do
-        row = table_row_by_id(delete_id)
+      it 'deletes if user confirms', :js do
+        row = table_row_by_id(index_delete_category.id)
         delete_accept(row, 'Delete')
-        expect(page).to have_content success_msg
+        expect(page).to have_content delete_success_msg
       end
     end
 
     context 'when navigating from the detailed view' do
-      let(:delete_button) { 'Delete Recipe Category' }
-      let!(:delete_category) { create(:recipe_category) }
-      let!(:delete_id) { delete_category.id.to_s }
-
       before do
-        visit admin_recipe_category_path(delete_category)
+        visit admin_recipe_category_path(detail_delete_category)
       end
 
       it 'has a delete link' do
-        expect(page.find_link(delete_button)).to be_truthy
+        expect(page.find_link(delete_button_text)).to be_truthy
       end
 
-      it 'does not delete if user cancels' do
-        expect { delete_dismiss(page, delete_button) }.not_to change(RecipeCategory, :count)
+      it 'does not delete if user cancels', :js do
+        expect { delete_dismiss(page, delete_button_text) }.not_to change(RecipeCategory, :count)
       end
 
-      it 'deletes if user confirms', retry_wait: 1 do
-        delete_accept(page, delete_button)
-        expect(page).to have_content success_msg
+      it 'deletes if user confirms', :js, retry_wait: 1 do
+        delete_accept(page, delete_button_text)
+        expect(page).to have_content delete_success_msg
       end
 
-      it 'routes to index page after delete' do
-        delete_accept(page, delete_button)
-        expect(page).to have_content success_msg
+      it 'routes to index page after delete', :js do
+        delete_accept(page, delete_button_text)
+        expect(page).to have_content delete_success_msg
         expect(page).to have_current_path admin_recipe_categories_path
       end
     end
@@ -259,9 +248,9 @@ RSpec.describe 'Admin::RecipeCategoriesController' do
     page.find("#active_admin_comments_for_recipe_category_#{id}")
   end
 
-  def post_comment(id, message)
+  def post_comment(id, comment_message)
     within comment_element(id) do
-      fill_in 'active_admin_comment_body', with: message
+      fill_in 'active_admin_comment_body', with: comment_message
     end
     click_button 'Add Comment'
   end
@@ -277,6 +266,10 @@ RSpec.describe 'Admin::RecipeCategoriesController' do
   def submit_form(name, btn_title)
     fill_form_fields(name)
     click_button btn_title
+  end
+
+  def attributes_element(id)
+    page.find "#attributes_table_recipe_category_#{id}"
   end
 
   def delete_dismiss(element, title)
