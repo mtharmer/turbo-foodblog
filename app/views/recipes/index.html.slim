@@ -6,17 +6,4 @@
   .d-grid.justify-content-end
     - if can? :create, Recipe
       = link_to 'New recipe', new_recipe_path, class: 'btn btn-primary mt-2'
-  #recipes.row.row-cols-3.mx-auto
-    - @recipes.each do |recipe|
-      .col.text-center
-        .card.m-2
-          h3
-            = recipe.title
-          p
-            | Author:
-            = recipe.user.email
-          p
-            = recipe&.comments&.length
-            |  comments
-          p
-            = link_to 'Show this recipe', recipe, class: 'btn btn-primary stretched-link'
+  = render partial: 'list', locals: { recipes: @recipes }

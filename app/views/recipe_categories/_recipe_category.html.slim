@@ -1,0 +1,6 @@
+div id="#{dom_id recipe_category}"
+  h1
+    = recipe_category.name
+  h2
+    | Recipes
+  = render partial: 'recipes/list', locals: { recipes: recipe_category.recipes }

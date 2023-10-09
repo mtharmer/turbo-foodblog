@@ -1,0 +1,17 @@
+.container
+  p[style="color: green"]
+    = notice
+  h1
+    | Recipes by Category
+  .d-grid.justify-content-end
+  #recipe_categories.row.row-cols-3.mx-auto
+    - @recipe_categories.each do |category|
+      .col.text-center
+        .card.m-2
+          h3#card-title
+            = category.name
+          p#recipe-count
+            = category.recipes&.count
+            |  recipes
+          p#recipe-link
+            = link_to 'Show recipes in this category', category, class: 'btn btn-primary stretched-link'

@@ -6,6 +6,7 @@ class Ability
   def initialize(user)
     can :read, Recipe
     can :read, Comment
+    can :read, RecipeCategory
 
     return if user.blank?
 

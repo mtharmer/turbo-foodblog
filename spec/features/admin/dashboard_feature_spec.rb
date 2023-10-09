@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'Admin::DashboardController', :only do
+RSpec.describe 'Admin::DashboardController' do
   let!(:admin) { create(:admin_user, email: 'adminuser@example.com', password: 'password') }
 
   def log_in_admin_user

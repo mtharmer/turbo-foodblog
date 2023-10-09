@@ -3,14 +3,17 @@
     ul.navbar-nav
       li.nav-item = link_to 'Home', root_path, class: 'nav-link'
       li = link_to 'Recipes', recipes_path, class: 'nav-link'
+      li.nav-item.dropdown
+        button.nav-link.dropdown-toggle[href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"]
+          | Categories
+        ul.dropdown-menu
+          li = link_to 'All Categories', recipe_categories_path, class: 'dropdown-item'
+          li.dropdown-divider
+          - RecipeCategory.find_each do |category|
+            li = link_to category.name, recipe_category_path(category), class: 'dropdown-item'
+    ul.d-flex.navbar-nav
       - if current_user.nil?
         li = link_to 'Log In', new_user_session_path, method: :get, class: 'nav-link'
         li = link_to 'Sign Up', new_user_registration_path, method: :get, class: 'nav-link'
       - else
         li = button_to 'Sign Out', destroy_user_session_path, method: :delete, class: 'nav-link'
-      li.nav-item.dropdown
-        button.nav-link.dropdown-toggle[href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"]
-          | Categories
-        ul.dropdown-menu
-          - RecipeCategory.find_each do |category|
-            li = link_to category.name, recipes_path(recipe_category: category.id), class: 'dropdown-item'
