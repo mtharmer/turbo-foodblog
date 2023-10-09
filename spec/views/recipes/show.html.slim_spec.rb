@@ -5,9 +5,9 @@ require 'rails_helper'
 RSpec.describe 'recipes/show', type: :view do
   before do
     assign(:recipe, build(:recipe,
-                         title: 'Title',
-                         ingredients: 'Ingredients',
-                         instructions: 'Instructions'))
+                          title: 'Title',
+                          ingredients: 'Ingredients',
+                          instructions: 'Instructions'))
     render
   end
 

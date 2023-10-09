@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 
 RSpec.describe 'recipe_categories/index', type: :view do
   before do
