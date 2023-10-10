@@ -4,35 +4,25 @@ require 'rails_helper'
 
 RSpec.describe Recipe, type: :model do
   it 'allows a recipe to be created' do
-    expect { create(:recipe) }.not_to raise_error
+    expect { create(:recipe) }.to change(described_class, :count).by 1
   end
 
-  it 'persists a created recipe' do
-    create(:recipe)
-    expect(described_class.first).not_to be_nil
+  context 'associations' do
+    subject { build(:recipe) }
+
+    it { is_expected.to have_many(:comments) }
+    it { is_expected.to belong_to(:user) }
   end
 
-  context 'with validation' do
-    it 'requires a title' do
-      expect { create(:recipe, title: nil) }.to raise_error(
-        ActiveRecord::RecordInvalid,
-        "Validation failed: Title can't be blank"
-      )
-    end
+  context 'validations' do
+    subject { build(:recipe) }
 
-    it 'requires unique titles per user' do
-      recipe = create(:recipe)
-      expect { create(:recipe, title: recipe.title, user: recipe.user) }.to raise_error(
-        ActiveRecord::RecordInvalid,
-        'Validation failed: Title has already been taken'
-      )
-    end
+    it { is_expected.to validate_presence_of(:title) }
+    it { is_expected.to validate_uniqueness_of(:title).scoped_to(:user_id) }
 
     it 'allows same titles for different users' do
-      user1 = create(:user)
-      user2 = create(:user)
-      recipe = create(:recipe, user: user1)
-      expect { create(:recipe, title: recipe.title, user: user2) }.not_to raise_error
+      recipe = create(:recipe)
+      expect { create(:recipe, title: recipe.title) }.to change(described_class, :count).by 1
     end
   end
 end

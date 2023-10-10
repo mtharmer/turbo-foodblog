@@ -12,6 +12,8 @@ gem "activeadmin", "~> 3.0"
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 
+gem "bootstrap", "~> 5.3"
+
 # Authorization gem to manage user roles and permissions
 gem "cancancan", "~> 3.5"
 
@@ -23,6 +25,8 @@ gem "devise", "~> 4.9"
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
+
+gem "importmap-rails", "~> 1.2"
 
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
@@ -75,6 +79,7 @@ group :test do
   gem "rspec-retry", "~> 0.6.2"
   gem "rspec-sidekiq", "~> 4.0"
   gem "selenium-webdriver", "~> 4.13"
+  gem "shoulda-matchers", "~> 5.3"
   gem "simplecov", "~> 0.22.0", require: false
 end
 
@@ -92,7 +97,3 @@ group :development do
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   # gem "spring"
 end
-
-gem "importmap-rails", "~> 1.2"
-
-gem "bootstrap", "~> 5.3"

@@ -2,19 +2,13 @@
 
 require 'rails_helper'
 
-RSpec.describe 'Admin::DashboardController' do
+RSpec.describe 'Admin::DashboardController', type: :feature do
   let!(:admin) { create(:admin_user, email: 'adminuser@example.com', password: 'password') }
-
-  def log_in_admin_user
-    visit new_admin_user_session_path
-    fill_in 'Email', with: admin.email
-    fill_in 'Password', with: admin.password
-    click_button 'Login'
-  end
 
   before do
     create(:comment)
-    log_in_admin_user
+    sign_in_admin admin
+    visit admin_root_path
   end
 
   it 'has a main content page' do

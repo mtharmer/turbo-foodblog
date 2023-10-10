@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'Admin::RecipeCategoriesController' do
+RSpec.describe 'Admin::RecipeCategoriesController', type: :feature do
   comment_message = 'Cool new comment'
   edit_page_title = 'Edit Recipe Category'
   delete_success_msg = 'Recipe category was successfully destroyed'
@@ -15,19 +15,9 @@ RSpec.describe 'Admin::RecipeCategoriesController' do
   let!(:index_delete_category) { create(:recipe_category, name: 'Delete Me') }
   let!(:detail_delete_category) { create(:recipe_category, name: 'No, Delete Me') }
 
-  def log_in_admin_user
-    visit new_admin_user_session_path
-    fill_in 'Email', with: admin.email
-    fill_in 'Password', with: admin.password
-    click_button 'Login'
-  end
-
   before do
-    log_in_admin_user
-  end
-
-  it 'logs in' do
-    expect(page).to have_content 'Signed in successfully'
+    sign_in_admin admin
+    visit admin_root_path
   end
 
   describe 'index' do

@@ -7,24 +7,15 @@ RSpec.describe RecipeCategory, type: :model do
     expect { create(:recipe_category) }.to change(described_class, :count).by(1)
   end
 
-  it 'requires a name to be specified' do
-    expect { create(:recipe_category, name: nil) }.to raise_error(
-      ActiveRecord::RecordInvalid,
-      "Validation failed: Name can't be blank"
-    )
+  context 'associations' do
+    it { is_expected.to have_many(:recipes).dependent(:nullify) }
   end
 
-  it 'requires unique names' do
-    category = create(:recipe_category)
-    expect { create(:recipe_category, name: category.name) }.to raise_error(
-      ActiveRecord::RecordInvalid,
-      'Validation failed: Name has already been taken'
-    )
-  end
+  context 'validations' do
+    subject { build(:recipe_category) }
 
-  it 'associates with recipes' do
-    category = create(:recipe_category)
-    expect { create(:recipe, recipe_category: category) }.to change(category.recipes, :count).by(1)
+    it { is_expected.to validate_presence_of(:name) }
+    it { is_expected.to validate_uniqueness_of(:name) }
   end
 
   it 'does not delete recipes when a category is deleted' do

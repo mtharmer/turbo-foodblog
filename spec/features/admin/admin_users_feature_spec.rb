@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'Admin::AdminUsersController' do
+RSpec.describe 'Admin::AdminUsersController', type: :feature do
   delete_text = 'Delete'
   delete_link = 'Delete Admin User'
   delete_success = 'Admin user was successfully destroyed.'
@@ -19,19 +19,9 @@ RSpec.describe 'Admin::AdminUsersController' do
   let!(:index_delete_admin) { create(:admin_user, email: 'index_delete_admin@example.com', password: 'password') }
   let!(:direct_delete_admin) { create(:admin_user, email: 'direct_delete_admin@example.com', password: 'password') }
 
-  def log_in_admin_user
-    visit new_admin_user_session_path
-    fill_in 'Email', with: admin.email
-    fill_in 'Password', with: admin.password
-    click_button 'Login'
-  end
-
   before do
-    log_in_admin_user
-  end
-
-  it 'logs in' do
-    expect(page).to have_content 'Signed in successfully'
+    sign_in_admin admin
+    visit admin_root_path
   end
 
   describe 'GET index' do

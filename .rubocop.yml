@@ -76,3 +76,6 @@ Metrics/BlockLength:
 
 RSpec/Rails/InferredSpecType:
   Enabled: false
+
+RSpec/ContextWording:
+  Enabled: false

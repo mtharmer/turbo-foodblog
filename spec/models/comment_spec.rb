@@ -7,24 +7,16 @@ RSpec.describe Comment, type: :model do
     expect { create(:comment) }.to change(described_class, :count).by 1
   end
 
-  it 'requires a message to be given' do
-    expect { create(:comment, message: nil) }.to raise_error(
-      ActiveRecord::RecordInvalid,
-      "Validation failed: Message can't be blank"
-    )
+  context 'associations' do
+    subject { build(:comment) }
+
+    it { is_expected.to belong_to(:user) }
+    it { is_expected.to belong_to(:recipe) }
   end
 
-  it 'requires a user' do
-    expect { create(:comment, user: nil) }.to raise_error(
-      ActiveRecord::RecordInvalid,
-      'Validation failed: User must exist'
-    )
-  end
+  context 'validations' do
+    subject { build(:comment) }
 
-  it 'requires a recipe' do
-    expect { create(:comment, recipe: nil) }.to raise_error(
-      ActiveRecord::RecordInvalid,
-      'Validation failed: Recipe must exist'
-    )
+    it { is_expected.to validate_presence_of(:message) }
   end
 end

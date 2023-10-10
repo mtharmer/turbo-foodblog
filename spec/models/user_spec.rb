@@ -4,35 +4,18 @@ require 'rails_helper'
 
 RSpec.describe User, type: :model do
   it 'allows a user to be created' do
-    expect { create(:user) }.not_to raise_error
+    expect { create(:user) }.to change(described_class, :count).by 1
   end
 
-  it 'persists a saved user' do
-    create(:user)
-    expect(described_class.first).not_to be_nil
+  context 'with associations' do
+    it { is_expected.to have_many(:recipes).class_name('Recipe') }
   end
 
   context 'with validation' do
-    it 'requires an email address' do
-      expect { create(:user, email: nil) }.to raise_error(
-        ActiveRecord::RecordInvalid,
-        "Validation failed: Email can't be blank"
-      )
-    end
+    subject { build(:user) }
 
-    it 'requires a password' do
-      expect { create(:user, password: nil) }.to raise_error(
-        ActiveRecord::RecordInvalid,
-        "Validation failed: Password can't be blank"
-      )
-    end
-
-    it 'requires unique email addresses' do
-      user = create(:user)
-      expect { create(:user, email: user.email) }.to raise_error(
-        ActiveRecord::RecordInvalid,
-        'Validation failed: Email has already been taken'
-      )
-    end
+    it { is_expected.to validate_presence_of(:email) }
+    it { is_expected.to validate_presence_of(:password) }
+    it { is_expected.to validate_uniqueness_of(:email).case_insensitive }
   end
 end

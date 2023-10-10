@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :recipe do
-    title { Faker::Food.unique.dish }
+    title { Faker::Food.dish }
     ingredients { Faker::Food.ingredient }
     instructions { Faker::Food.description }
     recipe_category { nil }

@@ -7,25 +7,11 @@ RSpec.describe AdminUser, type: :model do
     expect { create(:admin_user) }.to change(described_class, :count).by(1)
   end
 
-  it 'requires an email address' do
-    expect { create(:admin_user, email: nil) }.to raise_error(
-      ActiveRecord::RecordInvalid,
-      "Validation failed: Email can't be blank"
-    )
-  end
+  context 'validations' do
+    subject { build(:admin_user) }
 
-  it 'requires a password' do
-    expect { create(:admin_user, password: nil) }.to raise_error(
-      ActiveRecord::RecordInvalid,
-      "Validation failed: Password can't be blank"
-    )
-  end
-
-  it 'requires unique email addresses' do
-    user = create(:admin_user)
-    expect { create(:admin_user, email: user.email) }.to raise_error(
-      ActiveRecord::RecordInvalid,
-      'Validation failed: Email has already been taken'
-    )
+    it { is_expected.to validate_presence_of(:email) }
+    it { is_expected.to validate_presence_of(:password) }
+    it { is_expected.to validate_uniqueness_of(:email).case_insensitive }
   end
 end
