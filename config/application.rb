@@ -33,5 +33,11 @@ module TurboFoodblog
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+
+    # Generate slim files rather than ERB
+    config.generators.template_engine = :slim
+
+    # Prevent the InheretedResourcesController from templating
+    config.app_generators.scaffold_controller = :scaffold_controller
   end
 end

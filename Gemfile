@@ -55,6 +55,8 @@ gem "sidekiq", "~> 7.1"
 # HTML processor gem to replace ERB
 gem "slim", "~> 5.1"
 
+gem "slim-rails", "~> 3.6"
+
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 gem "sprockets-rails"
 
