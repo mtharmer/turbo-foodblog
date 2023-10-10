@@ -13,5 +13,6 @@ Rails.application.routes.draw do
   end
 
   resources :recipe_categories, only: %i[index show]
+  mount ImageUploader.derivation_endpoint => '/derivations/image'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 end

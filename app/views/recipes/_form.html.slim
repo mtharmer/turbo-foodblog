@@ -12,6 +12,10 @@
     = form.label :title, class: 'control-label'
     = form.text_field :title, class: 'form-control'
   div
+    = form.hidden_field :image, value: recipe.cached_image_data, id: nil
+    = form.label :image, class: 'control-label'
+    = form.file_field :image
+  div
     = form.label :ingredients, class: 'control-label'
     = form.text_area :ingredients, class: 'form-control'
   div

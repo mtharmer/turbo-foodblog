@@ -2,17 +2,21 @@
   #recipes.row.row-cols-3.mx-auto
     - recipes.each do |recipe|
       .col.text-center
-        .card.m-2
-          h3
-            = recipe.title
-          p
-            | Author:
-            = recipe.user.email
-          p
-            = recipe&.comments&.length
-            |  comments
-          p
-            = link_to 'Show this recipe', recipe, class: 'btn btn-primary stretched-link'
+        .card.mb-3
+          - if recipe.image
+            = image_tag recipe.image.derivation_url(:thumbnail, 250, 150),
+                        alt: 'recipe thumbnail', class: 'card-img-top'
+          .card-body
+            .card-title
+              = recipe.title
+            p
+              | Author:
+              = recipe.user.email
+            p
+              = recipe&.comments&.length
+              |  comments
+            p
+              = link_to 'Show this recipe', recipe, class: 'btn btn-primary stretched-link'
 - else
   p
     | No recipes yet!

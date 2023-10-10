@@ -10,7 +10,7 @@ RSpec.describe 'recipes/index', type: :view do
   end
 
   it 'renders titles' do
-    assert_select 'div>h3', text: Regexp.new('Title'.to_s), count: 2
+    assert_select 'div.card-title', text: Regexp.new('Title'.to_s), count: 2
   end
 
   it 'renders a list of recipes' do

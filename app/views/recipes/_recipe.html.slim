@@ -1,4 +1,6 @@
 div id="#{dom_id recipe}"
+  - if recipe.image
+    = image_tag recipe.image_url, class: 'ima-fluid', alt: 'recipe image'
   h1
     = recipe.title
   p
